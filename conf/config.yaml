@@ -1,0 +1,474 @@
+port: 6008
+allow-lan: true
+dns:
+  default-nameserver: [180.184.1.1, 119.29.29.29, 223.5.5.5]
+  enable: true
+  fake-ip-range: 198.18.0.1/16
+  nameserver: ['https://223.6.6.6/dns-query', 'https://120.53.53.53/dns-query', 'tls://223.5.5.5:853']
+  use-hosts: true
+  ipv6: true
+  listen: '127.0.0.1:5334'
+  enhanced-mode: fake-ip
+  fake-ip-filter: ['*.n.n.srv.nintendo.net', +.stun.playstation.net, 'xbox.*.*.microsoft.com', '*.msftncsi.com', '*.msftconnecttest.com', WORKGROUP, '*.lan', 'stun.*.*.*', 'stun.*.*', time.windows.com, time.nist.gov, time.apple.com, time.asia.apple.com, '*.ntp.org.cn', '*.openwrt.pool.ntp.org', time1.cloud.tencent.com, time.ustc.edu.cn, pool.ntp.org, ntp.ubuntu.com, '*.*.xboxlive.com', speedtest.cros.wr.pvp.net, stun.services.mozilla1.com, ntp.nasa.gov]
+  nameserver-policy: {+.pphimalayanrt.com: 223.5.5.5, st.dl.eccdnx.com: 223.5.5.5, +.tmall.com: 223.5.5.5, +.taobao.com: 223.5.5.5, +.alicdn.com: 223.5.5.5, +.aliyun.com: 223.5.5.5, +.alipay.com: 223.5.5.5, +.alibaba.com: 223.5.5.5, +.qq.com: 119.29.29.29, +.tencent.com: 119.29.29.29, +.weixin.com: 119.29.29.29, +.qpic.cn: 119.29.29.29, +.jd.com: 119.29.29.29, +.bilibili.com: 119.29.29.29, +.hdslb.com: 119.29.29.29, +.163.com: 119.29.29.29, +.126.com: 119.29.29.29, +.126.net: 119.29.29.29, +.127.net: 119.29.29.29, +.netease.com: 119.29.29.29, +.baidu.com: 223.5.5.5, +.bdstatic.com: 223.5.5.5, +.bilivideo.+: 119.29.29.29, +.iqiyi.com: 119.29.29.29, +.douyinvod.com: 180.184.1.1, +.douyin.com: 180.184.1.1, +.douyincdn.com: 180.184.1.1, +.douyinpic.com: 180.184.1.1, +.feishu.cn: 180.184.1.1}
+log-level: info
+mixed-port: 7890
+mode: rule
+proxies:
+  - name: "\U0001F1ED\U0001F1F0 香港 Ultra"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 8443
+    server: 2665b710-t919c0-tbsciy-6kaf.hkmpro.wkuaishou.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1F8\U0001F1EC 新加坡 Pro+ [AI]"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 8200
+    server: ad8d30a6-t919c0-tbsciy-6kaf.sgdc1mpro.wkuaishou.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1EF\U0001F1F5 东京Pro+ [AI]"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 8201
+    server: 6f580c7c-t919c0-tbsciy-6kaf.tkodc1mpro.wkuaishou.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1FA\U0001F1F8 硅谷 Pro+ [AI]"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 8202
+    server: 463d64a7-t919c0-tbsciy-6kaf.fmtdc1mpro.wkuaishou.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1FA\U0001F1F8 直连 | 洛杉矶一号"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3443
+    server: 37e738bc-t919c0-tbsciy-6kaf.los.west.wctype.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1FA\U0001F1F8 直连 | 硅谷"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3443
+    server: 188b9e1f-t919c0-tbsciy-6kaf.sjcdc2.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1FA\U0001F1F8 专线 | 硅谷"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 5228
+    server: 2cfab2ee-t919c0-tbsciy-6kaf.sksapisrv.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1FA\U0001F1F8 直连 | 硅谷二号"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3443
+    server: bca1dae1-t919c0-tbsciy-6kaf.fmt2-us.sghuawei.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1FA\U0001F1F8 直连 | 硅谷三号"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3443
+    server: 8b3d1b60-t919c0-tbsciy-6kaf.fmt-us.sghuawei.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1FA\U0001F1F8 专线 | 硅谷AI"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: '5229'
+    server: 2cfab2ee-t919c0-tbsciy-6kaf.sksapisrv.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1FA\U0001F1F8 直连 | 西雅图 AI一号"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3443
+    server: aa8512e6-t919c0-tbsciy-6kaf.seadc2.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1FA\U0001F1F8 直连 | 纽约"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3443
+    server: af5b4b2c-t919c0-tbsciy-6kaf.nyc.us.189ti.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1E8\U0001F1F3 专线 | 台湾"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3252
+    server: fac4b2da-t919c0-tbsciy-6kaf.twdc1.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1E8\U0001F1F3 专线 | 台湾二号"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3251
+    server: d9b18bf8-t919c0-tbsciy-6kaf.twdc2.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1ED\U0001F1F0 专线 | 香港"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3238
+    server: 2d87e2b9-t919c0-tbsciy-6kaf.nw3hktdc1.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1ED\U0001F1F0 直连 | 香港三号"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3443
+    server: aa542766-t919c0-tbsciy-6kaf.hkt.east.wctype.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1ED\U0001F1F0 专线 | 香港四号"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3257
+    server: 18ce0607-t919c0-tbsciy-6kaf.h2hktdc1.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1EF\U0001F1F5 专线 | 东京一号"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3236
+    server: 394bcacd-t919c0-tbsciy-6kaf.h2tkydc1.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1EF\U0001F1F5 专线 | 东京二号"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3235
+    server: 5b4c5dfc-t919c0-tbsciy-6kaf.h2tkydc2.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1EF\U0001F1F5 直连 | 东京三号"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3443
+    server: 9defbcce-t919c0-tbsciy-6kaf.tkydc3.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1EF\U0001F1F5 直连 | 东京四号"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3443
+    server: 753f9958-t919c0-tbsciy-6kaf.tky02.east.189ti.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1EF\U0001F1F5 直连 | 东京五号"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3443
+    server: a1495031-t919c0-tbsciy-6kaf.tky05.east.189ti.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1F8\U0001F1EC 专线 | 新加坡"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3253
+    server: 27379a2e-t919c0-tbsciy-6kaf.sgdc1.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1F8\U0001F1EC 专线 | 新加坡二号"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3233
+    server: 48c65453-t919c0-tbsciy-6kaf.h2sgdc2.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1F8\U0001F1EC 专线 | 新加坡三号"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3234
+    server: 7a8b2e3c-t919c0-tbsciy-6kaf.h2sgdc3.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1F8\U0001F1EC 直连 | 新加坡四号"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3443
+    server: d09cacf0-t919c0-tbsciy-6kaf.east.sgp2.189ti.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1F7\U0001F1FA 专线 | 俄罗斯"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3263
+    server: 830dcc01-t919c0-tbsciy-6kaf.h2ukdc1.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1F3\U0001F1F1 专线 | 荷兰"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3255
+    server: 0aeb25fb-t919c0-tbsciy-6kaf.amsdc1.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1EB\U0001F1F7 专线 | 法国"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3246
+    server: a588d871-t919c0-tbsciy-6kaf.h2frdc1.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1E9\U0001F1EA 专线 | 德国"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3245
+    server: 57b86a6f-t919c0-tbsciy-6kaf.h2dedc1.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1F0\U0001F1F7 专线 | 韩国"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3244
+    server: ef0c4461-t919c0-tbsciy-6kaf.h2krdc1.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1F2\U0001F1FE 专线 | 马来西亚 V3"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3239
+    server: 09dd2c12-t919c0-tbsciy-6kaf.h2mydc1.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1FB\U0001F1F3 专线 | 越南 V3"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3242
+    server: 2cfab2ee-t919c0-tbsciy-6kaf.sksapisrv.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1F9\U0001F1ED 专线 | 泰国 V3"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3242
+    server: 2cfab2ee-t919c0-tbsciy-6kaf.sksapisrv.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1F5\U0001F1ED 专线 | 菲律宾 V3"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3243
+    server: 2cfab2ee-t919c0-tbsciy-6kaf.sksapisrv.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1E7\U0001F1F7 专线 | 巴西"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3256
+    server: aa3f6241-t919c0-tbsciy-6kaf.brdc1.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1E6\U0001F1FA 专线｜澳大利亚"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3258
+    server: 04c3b403-t919c0-tbsciy-6kaf.h2audc1.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1EE\U0001F1E9 直连 | 印度尼西亚"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3443
+    server: cc28678a-t919c0-tbsciy-6kaf.lnd-id.189ti.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1EE\U0001F1F3 专线 | 印度"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3247
+    server: 265f67f5-t919c0-tbsciy-6kaf.h2indc1.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - name: "\U0001F1EC\U0001F1E7 专线 | 伦敦"
+    password: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+    port: 3261
+    server: 830dcc01-t919c0-tbsciy-6kaf.h2ukdc1.cdnbytescm.com
+    tls: true
+    type: http
+    username: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - alterId: 0
+    cipher: auto
+    name: 1️⃣如果你的节点数量低于20个⚠️
+    network: tcp
+    port: 4134
+    server: ccf40705-t919c0-tbsciy-6kaf.search.douyinstatic.com
+    tls: false
+    type: vmess
+    uuid: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+  - alterId: 2
+    cipher: auto
+    name: 2️⃣去看无忧行公告、换推荐客户端⚠️
+    network: tcp
+    port: 461
+    server: ccf40705-t919c0-tbsciy-6kaf.search.douyinstatic.com
+    tls: true
+    type: vmess
+    uuid: e7bc5f04-198d-11f0-82b3-f23c93136cb3
+proxy-groups:
+  - name: ❇️Manual Select
+    proxies:
+      - "\U0001F1ED\U0001F1F0 香港 Ultra"
+      - "\U0001F1F8\U0001F1EC 新加坡 Pro+ [AI]"
+      - "\U0001F1EF\U0001F1F5 东京Pro+ [AI]"
+      - "\U0001F1FA\U0001F1F8 硅谷 Pro+ [AI]"
+      - "\U0001F310 Auto Select"
+      - "\U0001F1FA\U0001F1F8 直连 | 洛杉矶一号"
+      - "\U0001F1FA\U0001F1F8 直连 | 硅谷"
+      - "\U0001F1FA\U0001F1F8 专线 | 硅谷"
+      - "\U0001F1FA\U0001F1F8 直连 | 硅谷二号"
+      - "\U0001F1FA\U0001F1F8 直连 | 硅谷三号"
+      - "\U0001F1FA\U0001F1F8 专线 | 硅谷AI"
+      - "\U0001F1FA\U0001F1F8 直连 | 西雅图 AI一号"
+      - "\U0001F1FA\U0001F1F8 直连 | 纽约"
+      - "\U0001F1E8\U0001F1F3 专线 | 台湾"
+      - "\U0001F1E8\U0001F1F3 专线 | 台湾二号"
+      - "\U0001F1ED\U0001F1F0 专线 | 香港"
+      - "\U0001F1ED\U0001F1F0 直连 | 香港三号"
+      - "\U0001F1ED\U0001F1F0 专线 | 香港四号"
+      - "\U0001F1EF\U0001F1F5 专线 | 东京一号"
+      - "\U0001F1EF\U0001F1F5 专线 | 东京二号"
+      - "\U0001F1EF\U0001F1F5 直连 | 东京三号"
+      - "\U0001F1EF\U0001F1F5 直连 | 东京四号"
+      - "\U0001F1EF\U0001F1F5 直连 | 东京五号"
+      - "\U0001F1F8\U0001F1EC 专线 | 新加坡"
+      - "\U0001F1F8\U0001F1EC 专线 | 新加坡二号"
+      - "\U0001F1F8\U0001F1EC 专线 | 新加坡三号"
+      - "\U0001F1F8\U0001F1EC 直连 | 新加坡四号"
+      - "\U0001F1F7\U0001F1FA 专线 | 俄罗斯"
+      - "\U0001F1F3\U0001F1F1 专线 | 荷兰"
+      - "\U0001F1EB\U0001F1F7 专线 | 法国"
+      - "\U0001F1E9\U0001F1EA 专线 | 德国"
+      - "\U0001F1F0\U0001F1F7 专线 | 韩国"
+      - "\U0001F1F2\U0001F1FE 专线 | 马来西亚 V3"
+      - "\U0001F1FB\U0001F1F3 专线 | 越南 V3"
+      - "\U0001F1F9\U0001F1ED 专线 | 泰国 V3"
+      - "\U0001F1F5\U0001F1ED 专线 | 菲律宾 V3"
+      - "\U0001F1E7\U0001F1F7 专线 | 巴西"
+      - "\U0001F1E6\U0001F1FA 专线｜澳大利亚"
+      - "\U0001F1EE\U0001F1E9 直连 | 印度尼西亚"
+      - "\U0001F1EE\U0001F1F3 专线 | 印度"
+      - "\U0001F1EC\U0001F1E7 专线 | 伦敦"
+      - 1️⃣如果你的节点数量低于20个⚠️
+      - 2️⃣去看无忧行公告、换推荐客户端⚠️
+    type: select
+  - interval: 1800
+    name: "\U0001F310 Auto Select"
+    proxies:
+      - "\U0001F1ED\U0001F1F0 香港 Ultra"
+      - "\U0001F1F8\U0001F1EC 新加坡 Pro+ [AI]"
+      - "\U0001F1EF\U0001F1F5 东京Pro+ [AI]"
+      - "\U0001F1FA\U0001F1F8 硅谷 Pro+ [AI]"
+      - "\U0001F1FA\U0001F1F8 直连 | 洛杉矶一号"
+      - "\U0001F1FA\U0001F1F8 直连 | 硅谷"
+      - "\U0001F1FA\U0001F1F8 专线 | 硅谷"
+      - "\U0001F1FA\U0001F1F8 直连 | 硅谷二号"
+      - "\U0001F1FA\U0001F1F8 直连 | 硅谷三号"
+      - "\U0001F1FA\U0001F1F8 直连 | 西雅图 AI一号"
+      - "\U0001F1FA\U0001F1F8 直连 | 纽约"
+      - "\U0001F1E8\U0001F1F3 专线 | 台湾"
+      - "\U0001F1E8\U0001F1F3 专线 | 台湾二号"
+      - "\U0001F1ED\U0001F1F0 专线 | 香港"
+      - "\U0001F1ED\U0001F1F0 直连 | 香港三号"
+      - "\U0001F1ED\U0001F1F0 专线 | 香港四号"
+      - "\U0001F1EF\U0001F1F5 专线 | 东京一号"
+      - "\U0001F1EF\U0001F1F5 专线 | 东京二号"
+      - "\U0001F1EF\U0001F1F5 直连 | 东京三号"
+      - "\U0001F1EF\U0001F1F5 直连 | 东京四号"
+      - "\U0001F1EF\U0001F1F5 直连 | 东京五号"
+      - "\U0001F1F8\U0001F1EC 专线 | 新加坡"
+      - "\U0001F1F8\U0001F1EC 专线 | 新加坡二号"
+      - "\U0001F1F8\U0001F1EC 专线 | 新加坡三号"
+      - "\U0001F1F8\U0001F1EC 直连 | 新加坡四号"
+      - "\U0001F1F7\U0001F1FA 专线 | 俄罗斯"
+      - "\U0001F1F3\U0001F1F1 专线 | 荷兰"
+      - "\U0001F1EB\U0001F1F7 专线 | 法国"
+      - "\U0001F1E9\U0001F1EA 专线 | 德国"
+      - "\U0001F1F0\U0001F1F7 专线 | 韩国"
+      - "\U0001F1F2\U0001F1FE 专线 | 马来西亚 V3"
+      - "\U0001F1FB\U0001F1F3 专线 | 越南 V3"
+      - "\U0001F1F9\U0001F1ED 专线 | 泰国 V3"
+      - "\U0001F1F5\U0001F1ED 专线 | 菲律宾 V3"
+      - "\U0001F1E7\U0001F1F7 专线 | 巴西"
+      - "\U0001F1E6\U0001F1FA 专线｜澳大利亚"
+      - "\U0001F1EE\U0001F1E9 直连 | 印度尼西亚"
+      - "\U0001F1EE\U0001F1F3 专线 | 印度"
+      - "\U0001F1EC\U0001F1E7 专线 | 伦敦"
+      - 1️⃣如果你的节点数量低于20个⚠️
+      - 2️⃣去看无忧行公告、换推荐客户端⚠️
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+  - interval: 1800
+    name: "\U0001F916 ChatGPT Group"
+    proxies:
+      - "\U0001F1FA\U0001F1F8 硅谷 Pro+ [AI]"
+      - "\U0001F1FA\U0001F1F8 直连 | 硅谷二号"
+      - "\U0001F1FA\U0001F1F8 直连 | 硅谷三号"
+      - "\U0001F1FA\U0001F1F8 专线 | 硅谷AI"
+      - "\U0001F1FA\U0001F1F8 直连 | 西雅图 AI一号"
+      - "\U0001F1EF\U0001F1F5 专线 | 东京一号"
+      - "\U0001F1EF\U0001F1F5 专线 | 东京二号"
+      - "\U0001F1F8\U0001F1EC 专线 | 新加坡"
+      - "\U0001F1F8\U0001F1EC 专线 | 新加坡二号"
+      - "\U0001F1F8\U0001F1EC 专线 | 新加坡三号"
+      - "\U0001F1F8\U0001F1EC 直连 | 新加坡四号"
+      - "\U0001F1F3\U0001F1F1 专线 | 荷兰"
+      - "\U0001F1EB\U0001F1F7 专线 | 法国"
+      - "\U0001F1E9\U0001F1EA 专线 | 德国"
+      - "\U0001F1F0\U0001F1F7 专线 | 韩国"
+      - "\U0001F1E7\U0001F1F7 专线 | 巴西"
+      - "\U0001F1E6\U0001F1FA 专线｜澳大利亚"
+      - "\U0001F1EE\U0001F1F3 专线 | 印度"
+      - "\U0001F1EC\U0001F1E7 专线 | 伦敦"
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+  - name: "悠兔"
+    type: select
+    proxies:
+    - "❇️Manual Select"
+    - "\U0001F310 Auto Select"
+    - "\U0001F916 ChatGPT Group"
+# Proxies and proxy groups will be inserted here
+rules:
+  - 'DOMAIN-SUFFIX,copilot.microsoft.com,悠兔'
+  - 'DOMAIN-SUFFIX,steamcontent.com,DIRECT'
+  - 'DOMAIN-SUFFIX,steamstatic.com,DIRECT'
+  - 'DOMAIN-SUFFIX,steamserver.net,DIRECT'
+  - 'DOMAIN-SUFFIX,test.steampowered.com,DIRECT'
+  - 'DOMAIN-SUFFIX,api.steampowered.com,DIRECT'
+  - 'DOMAIN-SUFFIX,rmbgame.net,DIRECT'
+  - 'DOMAIN,steamcdn-a.akamaihd.net,DIRECT'
+  - 'DOMAIN-SUFFIX,cm.steampowered.com,DIRECT'
+  - 'IP-CIDR,45.121.184.0/24,DIRECT'
+  - 'IP-CIDR,103.10.124.0/23,DIRECT'
+  - 'IP-CIDR,103.28.54.0/24,DIRECT'
+  - 'IP-CIDR,146.66.152.0/24,DIRECT'
+  - 'IP-CIDR,146.66.155.0/24,DIRECT'
+  - 'IP-CIDR,153.254.86.0/24,DIRECT'
+  - 'IP-CIDR,155.133.224.0/22,DIRECT'
+  - 'IP-CIDR,155.133.230.0/24,DIRECT'
+  - 'IP-CIDR,155.133.232.0/23,DIRECT'
+  - 'IP-CIDR,155.133.234.0/24,DIRECT'
+  - 'IP-CIDR,155.133.236.0/22,DIRECT'
+  - 'IP-CIDR,155.133.240.0/21,DIRECT'
+  - 'IP-CIDR,155.133.248.0/22,DIRECT'
+  - 'IP-CIDR,155.133.252.0/23,DIRECT'
+  - 'IP-CIDR,155.133.254.0/24,DIRECT'
+  - 'IP-CIDR,162.254.192.0/21,DIRECT'
+  - 'IP-CIDR,185.25.182.0/23,DIRECT'
+  - 'IP-CIDR,208.78.164.0/22,DIRECT'
+  - 'GEOIP,CN,DIRECT'
+  - 'MATCH,悠兔'
+bind-address: '*'
+external-controller: '0.0.0.0:6006'
+external-ui: dashboard
+hosts:
+  mtalk.google.com: 108.177.125.188
