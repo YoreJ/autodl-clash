@@ -66,12 +66,12 @@ echo ""
 
 # 3. 检查配置文件
 echo "3. 检查配置文件"
-CONFIG_FILE="/root/clash-for-AutoDL/conf/config.yaml"
+CONFIG_FILE="/root/autodl-clash/conf/config.yaml"
 if [ -f "$CONFIG_FILE" ]; then
     if [ -s "$CONFIG_FILE" ]; then
         # 检查 YAML 语法
-        if [ -x "/root/clash-for-AutoDL/bin/yq" ]; then
-            if "/root/clash-for-AutoDL/bin/yq" eval '.' "$CONFIG_FILE" > /dev/null 2>&1; then
+        if [ -x "/root/autodl-clash/bin/yq" ]; then
+            if "/root/autodl-clash/bin/yq" eval '.' "$CONFIG_FILE" > /dev/null 2>&1; then
                 check_status "配置文件语法" "PASS" "YAML 语法正确"
             else
                 check_status "配置文件语法" "FAIL" "YAML 语法错误"
@@ -108,8 +108,8 @@ else
 fi
 
 # 检查 .env 文件
-if [ -f "/root/clash-for-AutoDL/.env" ]; then
-    source /root/clash-for-AutoDL/.env
+if [ -f "/root/autodl-clash/.env" ]; then
+    source /root/autodl-clash/.env
     if [ -n "$CLASH_URL" ]; then
         check_status "订阅地址" "PASS" "已配置订阅地址"
     else
@@ -146,7 +146,7 @@ echo ""
 
 # 6. 日志检查
 echo "6. 检查日志文件"
-LOG_FILE="/root/clash-for-AutoDL/logs/mihomo.log"
+LOG_FILE="/root/autodl-clash/logs/mihomo.log"
 if [ -f "$LOG_FILE" ]; then
     # 检查最近的错误
     RECENT_ERRORS=$(tail -n 100 "$LOG_FILE" | grep -i "error\|fail" | wc -l)
@@ -163,15 +163,15 @@ echo ""
 # 7. 安全检查
 echo "7. 安全检查"
 # 检查敏感文件
-if [ -f "/root/clash-for-AutoDL/conf/clash_for_windows_config.yaml" ]; then
+if [ -f "/root/autodl-clash/conf/clash_for_windows_config.yaml" ]; then
     check_status "敏感配置文件" "FAIL" "发现包含敏感信息的配置文件"
 else
     check_status "敏感配置文件" "PASS" "未发现敏感配置文件"
 fi
 
 # 检查 git 状态
-if [ -d "/root/clash-for-AutoDL/.git" ]; then
-    cd /root/clash-for-AutoDL
+if [ -d "/root/autodl-clash/.git" ]; then
+    cd /root/autodl-clash
     if git ls-files | grep -q "clash_for_windows_config.yaml"; then
         check_status "Git 追踪" "FAIL" "敏感文件被 Git 追踪"
     else
@@ -197,7 +197,7 @@ if [ $ERRORS -gt 0 ] || [ $WARNINGS -gt 0 ]; then
     
     if ! pgrep -f "mihomo-linux-amd64" > /dev/null; then
         echo "1. 启动 Clash 服务："
-        echo "   cd /root/clash-for-AutoDL && source ./start.sh"
+        echo "   cd /root/autodl-clash && source ./start.sh"
         echo ""
     fi
     
@@ -213,9 +213,9 @@ if [ $ERRORS -gt 0 ] || [ $WARNINGS -gt 0 ]; then
         echo ""
     fi
     
-    if [ -f "/root/clash-for-AutoDL/conf/clash_for_windows_config.yaml" ]; then
+    if [ -f "/root/autodl-clash/conf/clash_for_windows_config.yaml" ]; then
         echo "4. 删除敏感配置文件："
-        echo "   rm /root/clash-for-AutoDL/conf/clash_for_windows_config.yaml"
+        echo "   rm /root/autodl-clash/conf/clash_for_windows_config.yaml"
         echo "   并从 Git 历史中完全删除"
         echo ""
     fi
