@@ -56,7 +56,7 @@ PORTS=("6008" "7890" "6006")
 PORT_NAMES=("HTTP代理" "混合代理" "控制面板")
 
 for i in ${!PORTS[@]}; do
-    if lsof -i :${PORTS[$i]} > /dev/null 2>&1; then
+    if timeout 1 bash -c "echo > /dev/tcp/127.0.0.1/${PORTS[$i]}" 2>/dev/null; then
         check_status "${PORT_NAMES[$i]}端口 (${PORTS[$i]})" "PASS" "端口正在监听"
     else
         check_status "${PORT_NAMES[$i]}端口 (${PORTS[$i]})" "FAIL" "端口未监听"
