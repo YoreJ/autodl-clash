@@ -16,6 +16,16 @@ HOP_BY_HOP_HEADERS = {
     "upgrade",
 }
 
+FRONTEND_ROUTES = {
+    "/backend",
+    "/proxies",
+    "/rules",
+    "/connections",
+    "/configs",
+    "/logs",
+    "/about",
+}
+
 
 class DashboardProxyHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
@@ -25,21 +35,37 @@ class DashboardProxyHandler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):
         return
 
-    def do_GET(self):
+    def dashboard_location(self):
+        host = self.headers.get("Host", "127.0.0.1").split(":", 1)[0]
+        return f"/ui/?hostname={quote(host)}&port={self.target_port}"
+
+    def should_redirect_to_dashboard(self):
         parsed = urlsplit(self.path)
-        if self.path in ("", "/") or (parsed.path in ("/ui", "/ui/") and not parsed.query):
-            host = self.headers.get("Host", "127.0.0.1").split(":", 1)[0]
-            location = f"/ui/?hostname={quote(host)}&port={self.target_port}"
-            self.send_response(302)
-            self.send_header("Location", location)
-            self.send_header("Cache-Control", "no-store")
-            self.send_header("Content-Length", "0")
-            self.end_headers()
+        return (
+            self.path in ("", "/")
+            or (parsed.path in ("/ui", "/ui/") and not parsed.query)
+            or parsed.path in FRONTEND_ROUTES
+        )
+
+    def redirect_to_dashboard(self):
+        self.send_response(302)
+        self.send_header("Location", self.dashboard_location())
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("Content-Length", "0")
+        self.end_headers()
+
+    def do_GET(self):
+        if self.should_redirect_to_dashboard():
+            self.redirect_to_dashboard()
             return
 
         self.proxy_request()
 
     def do_HEAD(self):
+        if self.should_redirect_to_dashboard():
+            self.redirect_to_dashboard()
+            return
+
         self.proxy_request()
 
     def do_OPTIONS(self):
