@@ -18,9 +18,13 @@ HOP_BY_HOP_HEADERS = {
 
 FRONTEND_ROUTES = {
     "/backend",
+    "/setup",
+    "/overview",
     "/proxies",
     "/rules",
     "/connections",
+    "/conns",
+    "/config",
     "/configs",
     "/logs",
     "/about",
@@ -29,6 +33,7 @@ FRONTEND_ROUTES = {
 
 class DashboardProxyHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
+    listen_port = 6008
     target_host = "127.0.0.1"
     target_port = 6006
 
@@ -37,14 +42,17 @@ class DashboardProxyHandler(BaseHTTPRequestHandler):
 
     def dashboard_location(self):
         host = self.headers.get("Host", "127.0.0.1").split(":", 1)[0]
-        return f"/ui/?hostname={quote(host)}&port={self.target_port}"
+        return f"/ui/?hostname={quote(host)}&port={self.listen_port}"
+
+    def accepts_html(self):
+        return "text/html" in self.headers.get("Accept", "")
 
     def should_redirect_to_dashboard(self):
         parsed = urlsplit(self.path)
         return (
             self.path in ("", "/")
             or (parsed.path in ("/ui", "/ui/") and not parsed.query)
-            or parsed.path in FRONTEND_ROUTES
+            or (parsed.path in FRONTEND_ROUTES and self.accepts_html())
         )
 
     def redirect_to_dashboard(self):
@@ -134,6 +142,7 @@ def main():
 
     DashboardProxyHandler.target_host = args.target_host
     DashboardProxyHandler.target_port = args.target_port
+    DashboardProxyHandler.listen_port = args.listen_port
 
     server = ThreadingHTTPServer((args.listen_host, args.listen_port), DashboardProxyHandler)
     server.serve_forever()

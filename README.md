@@ -224,7 +224,7 @@ ssh -L 6008:localhost:6008 -L 6006:localhost:6006 username@autodl_server_ip
 
 2. 保持SSH连接，在本地浏览器访问：`http://localhost:6008`
 
-3. Dashboard 会自动连接 `http://localhost:6006`；如需手动填写，`API Base URL` 使用 `http://localhost:6006`
+3. Dashboard 会通过 `6008` 同源入口代理到 `6006` 控制 API；如需手动填写，`API Base URL` 使用 `http://localhost:6008`
 
 ### 方案二：VSCode 端口转发（推荐）
 
@@ -289,7 +289,7 @@ ngrok http 6008
 
 ![17.png](https://s2.loli.net/2024/06/20/HzNquhIxLkPecTm.png)
 
-Dashboard 会通过 `6006` 控制 API 管理 mihomo。如果你通过端口转发访问，确保 `6008` 和 `6006` 都已转发。
+Dashboard 会通过 `6008` 同源入口代理到 `6006` 控制 API 管理 mihomo。如果你通过端口转发访问，优先转发 `6008`；需要直接调试 mihomo API 时再转发 `6006`。
 
 配置完成后，你就得到了一个和Clash for Windows类似的管理界面：
 
