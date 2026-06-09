@@ -21,7 +21,7 @@ CONFIG_FILE="$CONF_DIR/config.yaml"
 ENV_FILE="$SERVER_DIR/.env"
 YQ_BINARY="$SERVER_DIR/bin/yq"
 LOG_FILE="$LOG_DIR/mihomo.log"
-DASHBOARD_PORT="${DASHBOARD_PORT:-6006}"
+DASHBOARD_PORT="${DASHBOARD_PORT:-6008}"
 
 # 检查结果计数
 TOTAL_CHECKS=0
@@ -67,7 +67,7 @@ read_config_value() {
 
 HTTP_PORT=$(read_config_value '.port // ""' "7891")
 MIXED_PORT=$(read_config_value '.["mixed-port"] // ""' "7890")
-CONTROLLER_ADDR=$(read_config_value '.["external-controller"] // ""' "0.0.0.0:6008")
+CONTROLLER_ADDR=$(read_config_value '.["external-controller"] // ""' "0.0.0.0:6006")
 CONTROLLER_PORT="${CONTROLLER_ADDR##*:}"
 
 # 1. 检查 Clash 进程

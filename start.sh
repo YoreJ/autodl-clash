@@ -45,7 +45,7 @@ YQ_BINARY="$Server_Dir/bin/yq"
 log_file="logs/mihomo.log"
 Config_File="$Conf_Dir/config.yaml"
 CONVERTER_SCRIPT="$Server_Dir/converter.sh"
-DASHBOARD_PORT="${DASHBOARD_PORT:-6006}"
+DASHBOARD_PORT="${DASHBOARD_PORT:-6008}"
 DASHBOARD_PROXY_SCRIPT="$Server_Dir/dashboard_proxy.py"
 DASHBOARD_PROXY_LOG="$Log_Dir/dashboard_proxy.log"
 

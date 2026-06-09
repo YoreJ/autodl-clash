@@ -52,7 +52,7 @@ if_success() {
 Server_Dir="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 Conf_Dir="$Server_Dir/conf"
 Log_Dir="$Server_Dir/logs"
-DASHBOARD_PORT="${DASHBOARD_PORT:-6006}"
+DASHBOARD_PORT="${DASHBOARD_PORT:-6008}"
 DASHBOARD_PROXY_SCRIPT="$Server_Dir/dashboard_proxy.py"
 DASHBOARD_PROXY_LOG="$Log_Dir/dashboard_proxy.log"
 

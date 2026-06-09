@@ -14,11 +14,23 @@
     <meta name="application-name" content="yacd" />
     <meta name="description" content="Yet Another Clash Dashboard" />
     <title>yacd</title>
-    <script type="module" crossorigin src="./assets/index.171f553a.js"></script>
-    <link rel="stylesheet" href="./assets/index.b38debfc.css">
-  <link rel="manifest" href="./manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="./registerSW.js"></script></head>
+    <script type="module" crossorigin src="./assets/index-BfxF6Zjo.js"></script>
+    <link rel="stylesheet" href="./assets/index-Bg_1VLqf.css">
+  <link rel="manifest" href="./manifest.webmanifest"></head>
   <body>
-    <div id="app" data-base-url="http://127.0.0.1:6008"></div>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          registrations.forEach(function(registration) { registration.unregister(); });
+        });
+      }
+      if ("caches" in window) {
+        caches.keys().then(function(keys) {
+          keys.forEach(function(key) { caches.delete(key); });
+        });
+      }
+    </script>
+    <div id="root"></div>
     
   </body>
 </html>

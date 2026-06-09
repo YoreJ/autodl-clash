@@ -30,7 +30,7 @@ FRONTEND_ROUTES = {
 class DashboardProxyHandler(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
     target_host = "127.0.0.1"
-    target_port = 6008
+    target_port = 6006
 
     def log_message(self, fmt, *args):
         return
@@ -127,9 +127,9 @@ class DashboardProxyHandler(BaseHTTPRequestHandler):
 def main():
     parser = argparse.ArgumentParser(description="Dashboard entry proxy for mihomo external-ui")
     parser.add_argument("--listen-host", default="0.0.0.0")
-    parser.add_argument("--listen-port", type=int, default=6006)
+    parser.add_argument("--listen-port", type=int, default=6008)
     parser.add_argument("--target-host", default="127.0.0.1")
-    parser.add_argument("--target-port", type=int, default=6008)
+    parser.add_argument("--target-port", type=int, default=6006)
     args = parser.parse_args()
 
     DashboardProxyHandler.target_host = args.target_host

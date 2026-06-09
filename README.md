@@ -14,8 +14,8 @@ cd autodl-clash
 
 启动脚本询问是否自动添加 `proxy_on` 时，建议输入 `y`。启动完成后：
 
-- `http://127.0.0.1:6006/` 是控制面板 Dashboard。
-- `http://127.0.0.1:6008/` 是 mihomo 控制 API，正常会返回 `{"hello":"mihomo"}`。
+- `http://127.0.0.1:6006/` 是 mihomo 控制 API，正常会返回 `{"hello":"mihomo"}`。
+- `http://127.0.0.1:6008/` 是控制面板 Dashboard。
 - `7890` 是 mixed 代理端口。
 - `7891` 是 HTTP 代理端口。
 
@@ -142,8 +142,8 @@ apt-get install lsof
 正在启动Clash服务...
 服务启动成功！                                             [  OK  ]
 
-Clash API 地址: http://<your_ip>:6008
-Clash 控制面板访问地址: http://<your_ip>:6006
+Clash API 地址: http://<your_ip>:6006
+Clash 控制面板访问地址: http://<your_ip>:6008
 
 已添加代理函数到 .bashrc。
 请执行以下命令启动系统代理: proxy_on
@@ -206,7 +206,7 @@ shutdown_system
 
 ## Clash Dashboard (可选，不是梯子正常运行的必要选项)
 
-由于监管要求，AutoDL平台上禁止个人用户开放外网端口，因此需要使用端口转发技术来访问 Dashboard。Dashboard 入口端口是 `6006`，mihomo 控制 API 端口是 `6008`。
+由于监管要求，AutoDL平台上禁止个人用户开放外网端口，因此需要使用端口转发技术来访问 Dashboard。Dashboard 入口端口是 `6008`，mihomo 控制 API 端口是 `6006`。
 
 ### 方案一：SSH 端口转发（推荐）
 
@@ -215,16 +215,16 @@ SSH端口转发是最简单直接的方式，无需安装额外软件。
 1. 在本地终端（不是AutoDL服务器）运行以下命令：
 
 ```bash
-ssh -L 6006:localhost:6006 -L 6008:localhost:6008 username@autodl_server_ip
+ssh -L 6008:localhost:6008 -L 6006:localhost:6006 username@autodl_server_ip
 ```
 
 其中：
 - `username` 是你的AutoDL用户名
 - `autodl_server_ip` 是你的AutoDL服务器IP地址
 
-2. 保持SSH连接，在本地浏览器访问：`http://localhost:6006`
+2. 保持SSH连接，在本地浏览器访问：`http://localhost:6008`
 
-3. Dashboard 会自动连接 `http://localhost:6008`；如需手动填写，`API Base URL` 使用 `http://localhost:6008`
+3. Dashboard 会自动连接 `http://localhost:6006`；如需手动填写，`API Base URL` 使用 `http://localhost:6006`
 
 ### 方案二：VSCode 端口转发（推荐）
 
@@ -233,8 +233,8 @@ ssh -L 6006:localhost:6006 -L 6008:localhost:6008 username@autodl_server_ip
 1. 在VSCode中连接到AutoDL服务器
 2. 打开终端，确保Clash服务正在运行
 3. 在VSCode左侧找到"端口"面板（如果没有显示，按`Ctrl+Shift+P`，搜索"Forward a Port"）
-4. 点击"+"添加端口转发，分别输入 `6006` 和 `6008`
-5. VSCode会自动创建端口转发，打开 `6006` 对应的本地地址即可访问 Dashboard
+4. 点击"+"添加端口转发，分别输入 `6008` 和 `6006`
+5. VSCode会自动创建端口转发，打开 `6008` 对应的本地地址即可访问 Dashboard
 
 ### 方案三：ngrok 内网穿透（备用）
 
@@ -268,7 +268,7 @@ curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trust
 
 ```bash
 proxy_off
-ngrok http 6006
+ngrok http 6008
 ```
 
 ![14.png](https://s2.loli.net/2024/06/20/FYJ4Bx37ovcemKt.png)
@@ -289,7 +289,7 @@ ngrok http 6006
 
 ![17.png](https://s2.loli.net/2024/06/20/HzNquhIxLkPecTm.png)
 
-Dashboard 会通过 `6008` 控制 API 管理 mihomo。如果你通过端口转发访问，确保 `6006` 和 `6008` 都已转发。
+Dashboard 会通过 `6006` 控制 API 管理 mihomo。如果你通过端口转发访问，确保 `6008` 和 `6006` 都已转发。
 
 配置完成后，你就得到了一个和Clash for Windows类似的管理界面：
 
@@ -315,7 +315,7 @@ bash health_check.sh
 该脚本会自动检查以下项目：
 
 1. **Clash 进程状态** - 检查 Clash 是否正在运行
-2. **端口监听状态** - 检查代理端口（7890、7891）、控制 API 端口（6008）和控制面板端口（6006）
+2. **端口监听状态** - 检查代理端口（7890、7891）、控制 API 端口（6006）和控制面板端口（6008）
 3. **配置文件** - 检查 config.yaml 语法和代理节点配置
 4. **环境变量** - 检查代理环境变量和订阅地址配置
 5. **网络连接测试** - 测试是否能通过代理访问 Google 和 GitHub
@@ -335,8 +335,8 @@ Clash for AutoDL 健康检查
 2. 检查端口监听状态
 [✓] HTTP代理端口 (7891): 端口正在监听
 [✓] 混合代理端口 (7890): 端口正在监听
-[✓] 控制API端口 (6008): 端口正在监听
-[✓] 控制面板端口 (6006): 端口正在监听
+[✓] 控制API端口 (6006): 端口正在监听
+[✓] 控制面板端口 (6008): 端口正在监听
 [✓] 控制API根路径: 返回 mihomo hello
 [✓] 控制面板入口: 可以打开 Dashboard
 
