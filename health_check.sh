@@ -14,6 +14,15 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+SERVER_DIR="$( cd "$( dirname "$(readlink -f "${BASH_SOURCE[0]}")" )" && pwd )"
+CONF_DIR="$SERVER_DIR/conf"
+LOG_DIR="$SERVER_DIR/logs"
+CONFIG_FILE="$CONF_DIR/config.yaml"
+ENV_FILE="$SERVER_DIR/.env"
+YQ_BINARY="$SERVER_DIR/bin/yq"
+LOG_FILE="$LOG_DIR/mihomo.log"
+DASHBOARD_PORT="${DASHBOARD_PORT:-6008}"
+
 # 检查结果计数
 TOTAL_CHECKS=0
 PASSED_CHECKS=0
@@ -40,10 +49,31 @@ check_status() {
     fi
 }
 
+read_config_value() {
+    local expr="$1"
+    local fallback="$2"
+    local value=""
+
+    if [ -x "$YQ_BINARY" ] && [ -f "$CONFIG_FILE" ]; then
+        value=$("$YQ_BINARY" eval "$expr" "$CONFIG_FILE" 2>/dev/null)
+    fi
+
+    if [ -z "$value" ] || [ "$value" = "null" ]; then
+        echo "$fallback"
+    else
+        echo "$value"
+    fi
+}
+
+HTTP_PORT=$(read_config_value '.port // ""' "7891")
+MIXED_PORT=$(read_config_value '.["mixed-port"] // ""' "7890")
+CONTROLLER_ADDR=$(read_config_value '.["external-controller"] // ""' "0.0.0.0:6006")
+CONTROLLER_PORT="${CONTROLLER_ADDR##*:}"
+
 # 1. 检查 Clash 进程
 echo "1. 检查 Clash 进程状态"
-if pgrep -f "mihomo-linux-amd64" > /dev/null; then
-    PID=$(pgrep -f "mihomo-linux-amd64")
+if pgrep -f "$SERVER_DIR/bin/mihomo-linux" > /dev/null; then
+    PID=$(pgrep -f "$SERVER_DIR/bin/mihomo-linux" | tr '\n' ' ')
     check_status "进程状态" "PASS" "Clash 正在运行 (PID: $PID)"
 else
     check_status "进程状态" "FAIL" "Clash 进程未运行"
@@ -52,8 +82,8 @@ echo ""
 
 # 2. 检查端口监听
 echo "2. 检查端口监听状态"
-PORTS=("6008" "7890" "6006")
-PORT_NAMES=("HTTP代理" "混合代理" "控制面板")
+PORTS=("$HTTP_PORT" "$MIXED_PORT" "$CONTROLLER_PORT" "$DASHBOARD_PORT")
+PORT_NAMES=("HTTP代理" "混合代理" "控制API" "控制面板")
 
 for i in ${!PORTS[@]}; do
     if timeout 1 bash -c "echo > /dev/tcp/127.0.0.1/${PORTS[$i]}" 2>/dev/null; then
@@ -62,16 +92,27 @@ for i in ${!PORTS[@]}; do
         check_status "${PORT_NAMES[$i]}端口 (${PORTS[$i]})" "FAIL" "端口未监听"
     fi
 done
+
+if curl -s --connect-timeout 2 -m 5 "http://127.0.0.1:$CONTROLLER_PORT/" | grep -q '"hello":"mihomo"'; then
+    check_status "控制API根路径" "PASS" "返回 mihomo hello"
+else
+    check_status "控制API根路径" "FAIL" "未返回 mihomo hello"
+fi
+
+if curl -L -s --connect-timeout 2 -m 5 "http://127.0.0.1:$DASHBOARD_PORT/" | grep -qi '<title>yacd\|id="app"\|id="root"'; then
+    check_status "控制面板入口" "PASS" "可以打开 Dashboard"
+else
+    check_status "控制面板入口" "FAIL" "无法打开 Dashboard"
+fi
 echo ""
 
 # 3. 检查配置文件
 echo "3. 检查配置文件"
-CONFIG_FILE="/root/autodl-clash/conf/config.yaml"
 if [ -f "$CONFIG_FILE" ]; then
     if [ -s "$CONFIG_FILE" ]; then
         # 检查 YAML 语法
-        if [ -x "/root/autodl-clash/bin/yq" ]; then
-            if "/root/autodl-clash/bin/yq" eval '.' "$CONFIG_FILE" > /dev/null 2>&1; then
+        if [ -x "$YQ_BINARY" ]; then
+            if "$YQ_BINARY" eval '.' "$CONFIG_FILE" > /dev/null 2>&1; then
                 check_status "配置文件语法" "PASS" "YAML 语法正确"
             else
                 check_status "配置文件语法" "FAIL" "YAML 语法错误"
@@ -108,8 +149,8 @@ else
 fi
 
 # 检查 .env 文件
-if [ -f "/root/autodl-clash/.env" ]; then
-    source /root/autodl-clash/.env
+if [ -f "$ENV_FILE" ]; then
+    source "$ENV_FILE"
     if [ -n "$CLASH_URL" ]; then
         check_status "订阅地址" "PASS" "已配置订阅地址"
     else
@@ -123,21 +164,21 @@ echo ""
 # 5. 网络连接测试
 echo "5. 网络连接测试"
 # 测试本地代理
-if curl -s -x http://127.0.0.1:7890 -m 5 http://www.google.com > /dev/null 2>&1; then
+if curl -s -x "http://127.0.0.1:$MIXED_PORT" -m 5 http://www.google.com > /dev/null 2>&1; then
     check_status "代理连接 (Google)" "PASS" "可以通过代理访问"
 else
     check_status "代理连接 (Google)" "FAIL" "无法通过代理访问"
 fi
 
 # 测试 GitHub
-if curl -s -x http://127.0.0.1:7890 -m 5 https://api.github.com > /dev/null 2>&1; then
+if curl -s -x "http://127.0.0.1:$MIXED_PORT" -m 5 https://api.github.com > /dev/null 2>&1; then
     check_status "代理连接 (GitHub)" "PASS" "可以通过代理访问"
 else
     check_status "代理连接 (GitHub)" "FAIL" "无法通过代理访问"
 fi
 
 # 测试 Hugging Face
-if curl -s -x http://127.0.0.1:7890 -m 5 https://huggingface.co/api/whoami > /dev/null 2>&1; then
+if curl -s -x "http://127.0.0.1:$MIXED_PORT" -m 5 https://huggingface.co/api/whoami > /dev/null 2>&1; then
     check_status "代理连接 (Hugging Face)" "PASS" "可以通过代理访问"
 else
     check_status "代理连接 (Hugging Face)" "FAIL" "无法通过代理访问"
@@ -146,7 +187,6 @@ echo ""
 
 # 6. 日志检查
 echo "6. 检查日志文件"
-LOG_FILE="/root/autodl-clash/logs/mihomo.log"
 if [ -f "$LOG_FILE" ]; then
     # 检查最近的错误
     RECENT_ERRORS=$(tail -n 100 "$LOG_FILE" | grep -i "error\|fail" | wc -l)
@@ -163,15 +203,15 @@ echo ""
 # 7. 安全检查
 echo "7. 安全检查"
 # 检查敏感文件
-if [ -f "/root/autodl-clash/conf/clash_for_windows_config.yaml" ]; then
+if [ -f "$CONF_DIR/clash_for_windows_config.yaml" ]; then
     check_status "敏感配置文件" "FAIL" "发现包含敏感信息的配置文件"
 else
     check_status "敏感配置文件" "PASS" "未发现敏感配置文件"
 fi
 
 # 检查 git 状态
-if [ -d "/root/autodl-clash/.git" ]; then
-    cd /root/autodl-clash
+if [ -d "$SERVER_DIR/.git" ]; then
+    cd "$SERVER_DIR"
     if git ls-files | grep -q "clash_for_windows_config.yaml"; then
         check_status "Git 追踪" "FAIL" "敏感文件被 Git 追踪"
     else
@@ -195,9 +235,9 @@ if [ $ERRORS -gt 0 ] || [ $WARNINGS -gt 0 ]; then
     echo "建议修复以下问题："
     echo ""
     
-    if ! pgrep -f "mihomo-linux-amd64" > /dev/null; then
+    if ! pgrep -f "$SERVER_DIR/bin/mihomo-linux" > /dev/null; then
         echo "1. 启动 Clash 服务："
-        echo "   cd /root/autodl-clash && source ./start.sh"
+        echo "   cd $SERVER_DIR && ./start.sh"
         echo ""
     fi
     
@@ -213,9 +253,9 @@ if [ $ERRORS -gt 0 ] || [ $WARNINGS -gt 0 ]; then
         echo ""
     fi
     
-    if [ -f "/root/autodl-clash/conf/clash_for_windows_config.yaml" ]; then
+    if [ -f "$CONF_DIR/clash_for_windows_config.yaml" ]; then
         echo "4. 删除敏感配置文件："
-        echo "   rm /root/autodl-clash/conf/clash_for_windows_config.yaml"
+        echo "   rm $CONF_DIR/clash_for_windows_config.yaml"
         echo "   并从 Git 历史中完全删除"
         echo ""
     fi

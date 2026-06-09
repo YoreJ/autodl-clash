@@ -60,11 +60,10 @@ safe_remove() {
 # 关闭clash服务
 Text1="clash进程关闭成功！"
 Text2="clash进程关闭失败！"
-PID_NUM=$(ps -ef | grep [c]lash-linux | wc -l)
-PID=$(ps -ef | grep [c]lash-linux | sed -n 's/^[^ ]* *\([^ ]*\).*/\1/p')
+PID=$( { pgrep -f "$Server_Dir/bin/mihomo-linux"; pgrep -f "$Server_Dir/dashboard_proxy.py"; pgrep -f "clash-linux"; } 2>/dev/null | sort -u )
 ReturnStatus=0
-if [ "$PID_NUM" -ne 0 ]; then
-  kill "$PID" &>/dev/null
+if [ -n "$PID" ]; then
+  kill $PID &>/dev/null
   ReturnStatus=$?
 fi
 if_success "$Text1" "$Text2" "$ReturnStatus"

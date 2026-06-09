@@ -1,8 +1,42 @@
 # 项目介绍
 
-此项目是Fork [clash-for-linux](https://github.com/wanhebin/clash-for-linux)后针对AutoDL平台的一些简单适配
+此项目是Fork [clash-for-linux](https://github.com/wanhebin/clash-for-linux)后针对AutoDL平台的一些简单适配。
 
-主要是为了解决我们在AutoDL平台服务器上下载GitHub等一些国外资源速度慢的问题。
+主要是为了解决我们在AutoDL平台服务器上下载GitHub、Hugging Face、pip/conda 等国外资源速度慢的问题。本仓库已经带有可直接使用的 mihomo 配置和 Dashboard，其他服务器 clone 后运行 `start.sh` 即可使用；如需替换为自己的订阅，再修改 `.env` 或 `conf/config.yaml`。
+
+## 快速使用
+
+```bash
+git clone https://github.com/YoreJ/autodl-clash.git
+cd autodl-clash
+./start.sh
+```
+
+启动脚本询问是否自动添加 `proxy_on` 时，建议输入 `y`。启动完成后：
+
+- `http://127.0.0.1:6006/` 是 mihomo 控制 API，正常会返回 `{"hello":"mihomo"}`。
+- `http://127.0.0.1:6008/` 是控制面板 Dashboard。
+- `7890` 是 mixed 代理端口。
+- `7891` 是 HTTP 代理端口。
+
+当前 shell 如果还没有代理环境变量，执行：
+
+```bash
+proxy_on
+```
+
+检查服务：
+
+```bash
+./health_check.sh
+```
+
+如果在 AutoDL 或其他服务器上直连 GitHub 较慢，可以先启用平台加速器后再 clone：
+
+```bash
+source /etc/network_turbo
+git clone https://github.com/YoreJ/autodl-clash.git
+```
 
 > **注意：** 考虑到使用本仓库中的部分同学可能是这方面的新手，以下说明中添加了一些常见问题的解答和演示图片，请仔细阅读。如果图片看不清楚，可以安装[Imaugs](https://chromewebstore.google.com/detail/imagus/immpkjjlgappgfkkfieppnmlhakdmaab)，这是个老牌的Chrome插件，可以将图片放大查看。
 
@@ -34,12 +68,11 @@
 
 # 使用须知
 
-- 使用过程中如遇到问题，请优先查已有的 [issues](https://github.com/VocabVictor/clash-for-AutoDL/issues?q=is%3Aissue+is%3Aclosed)。(你在网页上看不到issue或者issue很少，是因为部分issue我认为已经解决，被关闭了，请在issue中搜索关键字，或者在issue下留言。)
+- 使用过程中如遇到问题，请优先查已有的 [issues](https://github.com/YoreJ/autodl-clash/issues?q=is%3Aissue)。(你在网页上看不到issue或者issue很少，是因为部分issue我认为已经解决，被关闭了，请在issue中搜索关键字，或者在issue下留言。)
 - 在进行issues提交前，请替换提交内容中是敏感信息（例如：订阅地址）。
-- 此项目不提供任何订阅信息，请自行准备Clash订阅地址。
-- 运行前请手动更改`.env`文件中的`CLASH_URL`变量值，否则无法正常运行。
+- 本仓库默认配置可以直接使用；如果需要替换为自己的订阅，请修改 `.env` 文件中的 `CLASH_URL`，然后删除旧的 `conf/config.yaml` 后重新运行 `./start.sh`。
 
-> **注意**：当你在使用此项目时，遇到任何无法独自解决的问题请优先前往 [issues](https://github.com/VocabVictor/clash-for-AutoDL/issues?q=is%3Aissue+is%3Aclosed) 寻找解决方法。由于空闲时间有限，后续将不再对Issues中 "已经解答"、"已有解决方案" 的问题进行重复性的回答。
+> **注意**：当你在使用此项目时，遇到任何无法独自解决的问题请优先前往 [issues](https://github.com/YoreJ/autodl-clash/issues?q=is%3Aissue) 寻找解决方法。由于空闲时间有限，后续将不再对Issues中 "已经解答"、"已有解决方案" 的问题进行重复性的回答。
 
 <br>
 
@@ -50,21 +83,21 @@
 下载项目
 
 ```bash
-git clone https://github.com/VocabVictor/clash-for-AutoDL.git
+git clone https://github.com/YoreJ/autodl-clash.git
 ```
 
 或者尝试kgithub(GitHub镜像站)下载
 
 ```bash
-git clone https://kkgithub.com/VocabVictor/clash-for-AutoDL.git
+git clone https://kkgithub.com/YoreJ/autodl-clash.git
 ```
 
 ![1.png](https://s2.loli.net/2024/06/20/8e4VzyTYZSGhPsC.png)
 
-进入到项目目录，编辑`.env`文件，修改变量`CLASH_URL`的值。
+进入到项目目录。默认配置可以直接使用；如果你要换成自己的订阅，再编辑 `.env` 文件并修改变量 `CLASH_URL` 的值。
 
 ```bash
-cd clash-for-AutoDL
+cd autodl-clash
 cp .env.example .env
 vim .env
 ```
@@ -84,7 +117,7 @@ vim .env
 - 进入项目目录
 
 ```bash
-cd clash-for-AutoDL
+cd autodl-clash
 ```
 
 ![4.png](https://s2.loli.net/2024/06/20/9yz4WwdoqrsCQt2.png)
@@ -101,7 +134,7 @@ apt-get install lsof
 - 运行启动脚本
 
 ```bash
-source ./start.sh
+./start.sh
 
 配置文件已存在，无需下载。
 配置文件格式正确，无需转换。
@@ -109,15 +142,14 @@ source ./start.sh
 正在启动Clash服务...
 服务启动成功！                                             [  OK  ]
 
-Clash 控制面板访问地址: http://<your_ip>:6006/ui
-Secret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Clash API 地址: http://<your_ip>:6006
+Clash 控制面板访问地址: http://<your_ip>:6008
 
 已添加代理函数到 .bashrc。
 请执行以下命令启动系统代理: proxy_on
 若要临时关闭系统代理，请执行: proxy_off
 若需要彻底删除，请调用: shutdown_system
 
-[√] 系统代理已启用
 正在测试网络连接...
 网络连接测试成功。
 ```
@@ -128,12 +160,12 @@ Secret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 - 检查服务端口
 
 ```bash
-lsof -i -P -n | grep LISTEN | grep -E ':6006|:789[0-9]'
+lsof -i -P -n | grep LISTEN | grep -E ':6006|:6008|:789[0-9]'
 
-tcp        0      0 127.0.0.1:6006          0.0.0.0:*               LISTEN     
-tcp6       0      0 :::7890                 :::*                    LISTEN     
-tcp6       0      0 :::7891                 :::*                    LISTEN     
-tcp6       0      0 :::7892                 :::*                    LISTEN
+tcp        0      0 0.0.0.0:6006            0.0.0.0:*               LISTEN
+tcp        0      0 0.0.0.0:6008            0.0.0.0:*               LISTEN
+tcp6       0      0 :::7890                 :::*                    LISTEN
+tcp6       0      0 :::7891                 :::*                    LISTEN
 ```
 
 ![7.png](https://s2.loli.net/2024/06/20/WMVzH431c8gARPw.png)
@@ -174,7 +206,7 @@ shutdown_system
 
 ## Clash Dashboard (可选，不是梯子正常运行的必要选项)
 
-由于监管要求，AutoDL平台上禁止个人用户开放外网端口，因此需要使用端口转发技术来访问Clash Dashboard。以下提供三种方案，推荐使用前两种。
+由于监管要求，AutoDL平台上禁止个人用户开放外网端口，因此需要使用端口转发技术来访问 Dashboard。Dashboard 入口端口是 `6008`，mihomo 控制 API 端口是 `6006`。
 
 ### 方案一：SSH 端口转发（推荐）
 
@@ -183,16 +215,16 @@ SSH端口转发是最简单直接的方式，无需安装额外软件。
 1. 在本地终端（不是AutoDL服务器）运行以下命令：
 
 ```bash
-ssh -L 6006:localhost:6006 username@autodl_server_ip
+ssh -L 6008:localhost:6008 -L 6006:localhost:6006 username@autodl_server_ip
 ```
 
 其中：
 - `username` 是你的AutoDL用户名
 - `autodl_server_ip` 是你的AutoDL服务器IP地址
 
-2. 保持SSH连接，在本地浏览器访问：`http://localhost:6006/ui`
+2. 保持SSH连接，在本地浏览器访问：`http://localhost:6008`
 
-3. 在`API Base URL`中输入：`http://localhost:6006`，在`Secret(optional)`中输入启动时显示的Secret
+3. Dashboard 会自动连接 `http://localhost:6006`；如需手动填写，`API Base URL` 使用 `http://localhost:6006`
 
 ### 方案二：VSCode 端口转发（推荐）
 
@@ -201,8 +233,8 @@ ssh -L 6006:localhost:6006 username@autodl_server_ip
 1. 在VSCode中连接到AutoDL服务器
 2. 打开终端，确保Clash服务正在运行
 3. 在VSCode左侧找到"端口"面板（如果没有显示，按`Ctrl+Shift+P`，搜索"Forward a Port"）
-4. 点击"+"添加端口转发，输入`6006`
-5. VSCode会自动创建端口转发，点击生成的本地地址即可访问Dashboard
+4. 点击"+"添加端口转发，分别输入 `6008` 和 `6006`
+5. VSCode会自动创建端口转发，打开 `6008` 对应的本地地址即可访问 Dashboard
 
 ### 方案三：ngrok 内网穿透（备用）
 
@@ -232,11 +264,11 @@ curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trust
 
 - 映射端口
 
-打开新的shell，运行下面的命令，映射6006端口：
+打开新的shell，运行下面的命令，映射 Dashboard 端口：
 
 ```bash
 proxy_off
-ngrok http 6006
+ngrok http 6008
 ```
 
 ![14.png](https://s2.loli.net/2024/06/20/FYJ4Bx37ovcemKt.png)
@@ -245,7 +277,7 @@ ngrok http 6006
 
 - 访问Dashboard
 
-点击链接（例如图中是https://078d-58-144-141-213.ngrok-free.app，记得加上`/ui`后缀），跳转到中间页面：
+点击链接（例如图中是https://078d-58-144-141-213.ngrok-free.app），跳转到中间页面：
 
 ![16.png](https://s2.loli.net/2024/06/20/oUykYI7zR8mxtri.png)
 
@@ -257,7 +289,7 @@ ngrok http 6006
 
 ![17.png](https://s2.loli.net/2024/06/20/HzNquhIxLkPecTm.png)
 
-在`API Base URL`中输入对应的地址，在`Secret(optional)`中输入启动时显示的Secret（也可以在`conf/config.yaml`文件中查看）。
+Dashboard 会通过 `6006` 控制 API 管理 mihomo。如果你通过端口转发访问，确保 `6008` 和 `6006` 都已转发。
 
 配置完成后，你就得到了一个和Clash for Windows类似的管理界面：
 
@@ -274,7 +306,7 @@ ngrok http 6006
 ### 使用方法
 
 ```bash
-cd clash-for-AutoDL
+cd autodl-clash
 bash health_check.sh
 ```
 
@@ -283,7 +315,7 @@ bash health_check.sh
 该脚本会自动检查以下项目：
 
 1. **Clash 进程状态** - 检查 Clash 是否正在运行
-2. **端口监听状态** - 检查代理端口（7890、7891、7892）和控制面板端口（6006）
+2. **端口监听状态** - 检查代理端口（7890、7891）、控制 API 端口（6006）和控制面板端口（6008）
 3. **配置文件** - 检查 config.yaml 语法和代理节点配置
 4. **环境变量** - 检查代理环境变量和订阅地址配置
 5. **网络连接测试** - 测试是否能通过代理访问 Google 和 GitHub
@@ -301,10 +333,12 @@ Clash for AutoDL 健康检查
 [✓] 进程状态: Clash 正在运行 (PID: 12345)
 
 2. 检查端口监听状态
-[✓] HTTP/SOCKS5代理端口 (7890): 端口正在监听
 [✓] HTTP代理端口 (7891): 端口正在监听
-[✓] SOCKS5代理端口 (7892): 端口正在监听
-[✓] 控制面板端口 (6006): 端口正在监听
+[✓] 混合代理端口 (7890): 端口正在监听
+[✓] 控制API端口 (6006): 端口正在监听
+[✓] 控制面板端口 (6008): 端口正在监听
+[✓] 控制API根路径: 返回 mihomo hello
+[✓] 控制面板入口: 可以打开 Dashboard
 
 ...
 

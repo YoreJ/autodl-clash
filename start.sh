@@ -31,8 +31,10 @@ Server_Dir="$( cd "$( dirname "$(readlink -f "${BASH_SOURCE[0]}")" )" && pwd )"
 Conf_Dir="$Server_Dir/conf"
 Log_Dir="$Server_Dir/logs"
 
-# 注入配置文件里面的变量
-source $Server_Dir/.env
+# 注入配置文件里面的变量；已有配置文件时允许不提供 .env。
+if [ -f "$Server_Dir/.env" ]; then
+    source "$Server_Dir/.env"
+fi
 
 # 第三方库版本变量
 MIHOMO_VERSION="1.19.11"
@@ -43,9 +45,12 @@ YQ_BINARY="$Server_Dir/bin/yq"
 log_file="logs/mihomo.log"
 Config_File="$Conf_Dir/config.yaml"
 CONVERTER_SCRIPT="$Server_Dir/converter.sh"
+DASHBOARD_PORT="${DASHBOARD_PORT:-6008}"
+DASHBOARD_PROXY_SCRIPT="$Server_Dir/dashboard_proxy.py"
+DASHBOARD_PROXY_LOG="$Log_Dir/dashboard_proxy.log"
 
-# URL变量
-URL=${CLASH_URL:?Error: CLASH_URL variable is not set or empty}
+# URL变量。仅当需要重新下载配置文件时才要求 CLASH_URL。
+URL=${CLASH_URL:-}
 # Clash 密钥
 Secret=${CLASH_SECRET:-$(openssl rand -hex 32)}
 
@@ -408,6 +413,11 @@ if [ -n "$pids" ]; then
     kill $pids &>/dev/null
 fi
 
+dashboard_pids=$(pgrep -f "$DASHBOARD_PROXY_SCRIPT")
+if [ -n "$dashboard_pids" ]; then
+    kill $dashboard_pids &>/dev/null
+fi
+
 #==============================================================
 # 配置文件检查与下载
 #==============================================================
@@ -415,6 +425,11 @@ fi
 if [ -f "$Config_File" ]; then
     echo "配置文件已存在，无需下载。"
 else
+    if [ -z "$URL" ]; then
+        echo -e "${RED}错误：配置文件不存在，且 CLASH_URL 未设置。请先配置 .env 或放置 conf/config.yaml。${NC}"
+        exit 1
+    fi
+
     echo -e '\n正在检测订阅地址...'
     if curl -o /dev/null -L -k -sS --retry 5 -m 10 --connect-timeout 10 -w "%{http_code}" "$URL" | grep -E '^[23][0-9]{2}$' &>/dev/null; then
         echo "Clash订阅地址可访问！"
@@ -512,8 +527,30 @@ fi
 
 if [[ $Status -eq 0 ]]; then
     # Output Dashboard access address and Secret
+    if [ -x "$YQ_BINARY" ]; then
+        controller_addr=$($YQ_BINARY eval '.["external-controller"] // "127.0.0.1:9090"' "$Config_File" 2>/dev/null)
+    else
+        controller_addr=$(grep -m1 '^external-controller:' "$Config_File" | sed "s/^external-controller:[[:space:]]*//; s/[\"']//g")
+    fi
+    if [ -z "$controller_addr" ] || [ "$controller_addr" = "null" ]; then
+        controller_addr="127.0.0.1:9090"
+    fi
+    controller_port="${controller_addr##*:}"
+    api_addr=${controller_addr/0.0.0.0/<your_ip>}
+
+    if [ -f "$DASHBOARD_PROXY_SCRIPT" ] && command -v python3 > /dev/null 2>&1; then
+        nohup python3 "$DASHBOARD_PROXY_SCRIPT" \
+            --listen-host "0.0.0.0" \
+            --listen-port "$DASHBOARD_PORT" \
+            --target-host "127.0.0.1" \
+            --target-port "$controller_port" \
+            > "$DASHBOARD_PROXY_LOG" 2>&1 </dev/null &
+        disown
+    fi
+
     echo ''
-    echo -e "Clash 控制面板访问地址: http://<your_ip>:6006/ui"
+    echo -e "Clash API 地址: http://${api_addr}"
+    echo -e "Clash 控制面板访问地址: http://<your_ip>:${DASHBOARD_PORT}"
     echo ''
 fi
 
@@ -522,9 +559,12 @@ fi
 #==============================================================
 # 获取Clash端口（如果yq可用）
 if [ -x "$YQ_BINARY" ]; then
-    CLASH_PORT=$($YQ_BINARY eval '.port' $Config_File 2>/dev/null || echo "7890")
+    CLASH_PORT=$($YQ_BINARY eval '.port // .["mixed-port"] // 7890' "$Config_File" 2>/dev/null || echo "7890")
 else
     CLASH_PORT="7890"  # 默认端口
+fi
+if [ -z "$CLASH_PORT" ] || [ "$CLASH_PORT" = "null" ]; then
+    CLASH_PORT="7890"
 fi
 
 if [[ $Status -eq 0 ]]; then
@@ -600,8 +640,7 @@ EOF" > /tmp/clash_functions
         auto_proxy_enabled=false
     fi
 
-    # 重新加载 .bashrc
-    source ~/.bashrc
+    # 非交互 shell 中 .bashrc 通常会提前 return，这里不依赖 source 结果。
 fi
 
 # 如果是第一次运行或用户拒绝自动添加，此变量可能未设置
@@ -625,10 +664,21 @@ if [ "$auto_proxy_enabled" = false ]; then
     echo -e "${GREEN}[√] 已临时开启代理进行测试${NC}"
 fi
 
-if curl -s -o /dev/null -w "%{http_code}" google.com | grep -qE '^[0-9]+$'; then
+test_code=""
+for attempt in $(seq 1 6); do
+    test_code=$(curl -L -sS -x "http://127.0.0.1:$CLASH_PORT" --connect-timeout 3 -m 8 -o /dev/null -w "%{http_code}" https://www.google.com/generate_204 2>/dev/null)
+    if [[ "$test_code" =~ ^[23][0-9]{2}$ ]]; then
+        break
+    fi
+    if [ "$attempt" -lt 6 ]; then
+        sleep 5
+    fi
+done
+
+if [[ "$test_code" =~ ^[23][0-9]{2}$ ]]; then
     echo -e "${GREEN}网络连接测试成功。${NC}"
 else
-    echo -e "${RED}网络连接测试失败。请检查您的网络和 Clash 配置。${NC}"
+    echo -e "${RED}网络连接测试失败。请检查您的网络和 Clash 配置。(HTTP: ${test_code:-无响应})${NC}"
 fi
 
 # 如果不是自动设置代理，则手动关闭代理

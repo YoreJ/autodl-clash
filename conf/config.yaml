@@ -1,4 +1,4 @@
-port: 6008
+port: 7891
 allow-lan: true
 dns:
   default-nameserver: [180.184.1.1, 119.29.29.29, 223.5.5.5]
@@ -433,9 +433,9 @@ proxy-groups:
   - name: "悠兔"
     type: select
     proxies:
-    - "❇️Manual Select"
-    - "\U0001F310 Auto Select"
-    - "\U0001F916 ChatGPT Group"
+      - "\U0001F310 Auto Select"
+      - "❇️Manual Select"
+      - "\U0001F916 ChatGPT Group"
 # Proxies and proxy groups will be inserted here
 rules:
   - 'DOMAIN-SUFFIX,copilot.microsoft.com,悠兔'

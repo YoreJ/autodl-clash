@@ -52,6 +52,9 @@ if_success() {
 Server_Dir="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 Conf_Dir="$Server_Dir/conf"
 Log_Dir="$Server_Dir/logs"
+DASHBOARD_PORT="${DASHBOARD_PORT:-6008}"
+DASHBOARD_PROXY_SCRIPT="$Server_Dir/dashboard_proxy.py"
+DASHBOARD_PROXY_LOG="$Log_Dir/dashboard_proxy.log"
 
 # 确保目录存在
 [[ ! -d "$Conf_Dir" ]] && mkdir -p "$Conf_Dir"
@@ -82,12 +85,21 @@ close_clash_service() {
     kill $pids &>/dev/null
     return_status=$((return_status + $?))
   fi
+
+  pids=$(pgrep -f "$DASHBOARD_PROXY_SCRIPT")
+  if [ -n "$pids" ]; then
+    local dashboard_count=$(echo "$pids" | wc -l)
+    pid_num=$((pid_num + dashboard_count))
+    echo "找到 $dashboard_count 个dashboard入口进程"
+    kill $pids &>/dev/null
+    return_status=$((return_status + $?))
+  fi
   
   # 等待进程完全关闭
   sleep 2
   
   # 强制杀死顽固进程
-  pids=$(pgrep -f "mihomo-linux\|clash-linux")
+  pids=$( { pgrep -f "mihomo-linux\|clash-linux"; pgrep -f "$DASHBOARD_PROXY_SCRIPT"; } 2>/dev/null | sort -u )
   if [ -n "$pids" ]; then
     echo "强制关闭剩余进程..."
     kill -9 $pids &>/dev/null
@@ -168,6 +180,38 @@ start_clash_service() {
   if_success "服务启动成功！" "服务启动失败！" "$return_status"
 }
 
+get_controller_port() {
+  local controller_addr=""
+
+  if [ -x "$Server_Dir/bin/yq" ]; then
+    controller_addr=$("$Server_Dir/bin/yq" eval '.["external-controller"] // "127.0.0.1:9090"' "$Conf_Dir/config.yaml" 2>/dev/null)
+  fi
+
+  if [ -z "$controller_addr" ] || [ "$controller_addr" = "null" ]; then
+    controller_addr=$(grep -m1 '^external-controller:' "$Conf_Dir/config.yaml" | sed "s/^external-controller:[[:space:]]*//; s/[\"']//g")
+  fi
+
+  if [ -z "$controller_addr" ]; then
+    controller_addr="127.0.0.1:9090"
+  fi
+
+  echo "${controller_addr##*:}"
+}
+
+start_dashboard_proxy() {
+  if [ ! -f "$DASHBOARD_PROXY_SCRIPT" ] || ! command -v python3 > /dev/null 2>&1; then
+    return 0
+  fi
+
+  local controller_port=$(get_controller_port)
+  nohup python3 "$DASHBOARD_PROXY_SCRIPT" \
+    --listen-host "0.0.0.0" \
+    --listen-port "$DASHBOARD_PORT" \
+    --target-host "127.0.0.1" \
+    --target-port "$controller_port" \
+    > "$DASHBOARD_PROXY_LOG" 2>&1 </dev/null &
+}
+
 # 检查服务状态
 check_service_status() {
   local pids=$(pgrep -f "mihomo-linux-amd64|clash-linux-amd64")
@@ -205,6 +249,7 @@ main() {
   [[ ! -d "$Log_Dir" ]] && mkdir -p "$Log_Dir"
   
   start_clash_service
+  start_dashboard_proxy
   
   # 等待服务启动完成
   sleep 2
