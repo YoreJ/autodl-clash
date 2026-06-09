@@ -2,7 +2,7 @@
 import argparse
 import http.client
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 
 
 HOP_BY_HOP_HEADERS = {
@@ -26,7 +26,8 @@ class DashboardProxyHandler(BaseHTTPRequestHandler):
         return
 
     def do_GET(self):
-        if self.path in ("", "/"):
+        parsed = urlsplit(self.path)
+        if self.path in ("", "/") or (parsed.path in ("/ui", "/ui/") and not parsed.query):
             host = self.headers.get("Host", "127.0.0.1").split(":", 1)[0]
             location = f"/ui/?hostname={quote(host)}&port={self.target_port}"
             self.send_response(302)
