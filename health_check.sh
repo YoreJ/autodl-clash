@@ -21,7 +21,7 @@ CONFIG_FILE="$CONF_DIR/config.yaml"
 ENV_FILE="$SERVER_DIR/.env"
 YQ_BINARY="$SERVER_DIR/bin/yq"
 LOG_FILE="$LOG_DIR/mihomo.log"
-DASHBOARD_PORT="${DASHBOARD_PORT:-6008}"
+DASHBOARD_PORT="${DASHBOARD_PORT:-6006}"
 
 # 检查结果计数
 TOTAL_CHECKS=0
@@ -67,7 +67,7 @@ read_config_value() {
 
 HTTP_PORT=$(read_config_value '.port // ""' "7891")
 MIXED_PORT=$(read_config_value '.["mixed-port"] // ""' "7890")
-CONTROLLER_ADDR=$(read_config_value '.["external-controller"] // ""' "0.0.0.0:6006")
+CONTROLLER_ADDR=$(read_config_value '.["external-controller"] // ""' "0.0.0.0:6008")
 CONTROLLER_PORT="${CONTROLLER_ADDR##*:}"
 
 # 1. 检查 Clash 进程
@@ -188,8 +188,8 @@ echo ""
 # 6. 日志检查
 echo "6. 检查日志文件"
 if [ -f "$LOG_FILE" ]; then
-    # 检查最近的错误
-    RECENT_ERRORS=$(tail -n 100 "$LOG_FILE" | grep -i "error\|fail" | wc -l)
+    # 只统计 mihomo 的真正错误级别；节点超时通常是 warning，消息里也可能包含 error 字样。
+    RECENT_ERRORS=$(tail -n 100 "$LOG_FILE" | grep -Ei 'level=(error|fatal)|panic' | wc -l)
     if [ $RECENT_ERRORS -eq 0 ]; then
         check_status "日志错误" "PASS" "最近没有错误日志"
     else

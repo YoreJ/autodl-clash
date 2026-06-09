@@ -468,7 +468,7 @@ rules:
   - 'GEOIP,CN,DIRECT'
   - 'MATCH,悠兔'
 bind-address: '*'
-external-controller: '0.0.0.0:6006'
+external-controller: '0.0.0.0:6008'
 external-ui: dashboard
 hosts:
   mtalk.google.com: 108.177.125.188
