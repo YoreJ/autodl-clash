@@ -41,8 +41,7 @@ class DashboardProxyHandler(BaseHTTPRequestHandler):
         return
 
     def dashboard_location(self):
-        host = self.headers.get("Host", "127.0.0.1").split(":", 1)[0]
-        return f"/ui/?hostname={quote(host)}&port={self.listen_port}"
+        return "/ui/"
 
     def accepts_html(self):
         return "text/html" in self.headers.get("Accept", "")
@@ -51,7 +50,6 @@ class DashboardProxyHandler(BaseHTTPRequestHandler):
         parsed = urlsplit(self.path)
         return (
             self.path in ("", "/")
-            or (parsed.path in ("/ui", "/ui/") and not parsed.query)
             or (parsed.path in FRONTEND_ROUTES and self.accepts_html())
         )
 
