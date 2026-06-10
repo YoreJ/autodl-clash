@@ -406,6 +406,8 @@ proxy-groups:
       - 2️⃣去看无忧行公告、换推荐客户端⚠️
     type: url-test
     url: http://www.gstatic.com/generate_204
+    lazy: false
+    timeout: 10000
   - interval: 1800
     name: "\U0001F916 ChatGPT Group"
     proxies:
@@ -430,6 +432,8 @@ proxy-groups:
       - "\U0001F1EC\U0001F1E7 专线 | 伦敦"
     type: url-test
     url: http://www.gstatic.com/generate_204
+    lazy: false
+    timeout: 10000
   - name: "悠兔"
     type: select
     proxies:

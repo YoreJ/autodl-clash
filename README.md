@@ -31,6 +31,14 @@ proxy_on
 ./health_check.sh
 ```
 
+全量测试所有真实节点延迟：
+
+```bash
+./speed_test_all.sh
+```
+
+如果控制面板中部分节点显示 `--`，通常表示该节点测速失败或超时，不是没有显示。可以用上面的脚本确认哪些节点可用；脚本会逐个调用 mihomo 的 `/proxies/{name}/delay` 接口并输出成功/失败原因。
+
 如果在 AutoDL 或其他服务器上直连 GitHub 较慢，可以先启用平台加速器后再 clone：
 
 ```bash
